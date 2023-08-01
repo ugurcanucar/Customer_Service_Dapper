@@ -12,7 +12,6 @@ namespace Customer_Service.Infrastructure.Repositories;
 
 public class CustomerRepository : ICustomerRepository
 {
-    
     private readonly IDbConnectFactory _connectFactory;
 
     public CustomerRepository(IDbConnectFactory configuration)
@@ -50,26 +49,25 @@ public class CustomerRepository : ICustomerRepository
             await connection.ExecuteAsync(sql, entity);
             return new Customer()
             {
-                Name = entity.Name, 
-                Surname = entity.Surname, 
-                CityId = entity.CityId, 
+                Name = entity.Name,
+                Surname = entity.Surname,
+                CityId = entity.CityId,
                 PhoneNumber = entity.PhoneNumber,
                 Email = entity.Email
             };
         }
     }
 
-    
 
     public async Task<Customer> UpdateAsync(Customer entity)
     {
-        var sql = "Update Customer SET Name= @Name,Email=@Email, Surname= @Surname,CityId=@CityId Where Id= @Id; Select*From Customer Where Id=@Id";
+        var sql =
+            "Update Customer SET Name= @Name,Email=@Email, Surname= @Surname,CityId=@CityId Where Id= @Id; Select*From Customer Where Id=@Id";
         using (var connection = _connectFactory.GetSqlConnection())
         {
             connection.Open();
-           Customer customer= await connection.QueryFirstAsync<Customer>(sql, entity);
-           return customer;
-
+            Customer customer = await connection.QueryFirstAsync<Customer>(sql, entity);
+            return customer;
         }
     }
 
@@ -88,6 +86,29 @@ public class CustomerRepository : ICustomerRepository
             {
                 throw new Exception(e.Message);
             }
+        }
+    }
+
+    public async Task<Customer> RegisterAsync(RegisterCustomerRequestDto entity)
+    {
+        var sql =
+            "Insert into Customer(Name,Surname,Email,PhoneNumber,CityId,PasswordHash) values (@Name,@Surname,@Email,@PhoneNumber,@CityId,@Password); Select*From Customer Where Id=SCOPE_IDENTITY()";
+        using (var connection = _connectFactory.GetSqlConnection())
+        {
+            connection.Open();
+            return await connection.QueryFirstAsync<Customer>(sql, entity);
+        }
+    }
+
+   
+
+    public async Task<Customer> GetCustomerByEmailAsync(string email)
+    {
+        var sql = $"SELECT * FROM Customer WHERE Email='{email}'";
+        using (var connection = _connectFactory.GetSqlConnection())
+        {
+            connection.Open();
+            return await connection.QueryFirstAsync<Customer>(sql);
         }
     }
 }

@@ -2,12 +2,13 @@ using Customer_Service.Application.Mediatr.Commands.City;
 using Customer_Service.Application.Mediatr.Queries.City;
 using Customer_Service.Application.Mediatr.Queries.Customer;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Customer_Service_API.Controllers;
 
 [Route("api/City")]
-[ApiController]
+ [ApiController]
 public class CityController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -16,8 +17,8 @@ public class CityController : ControllerBase
     {
         _mediator = mediator;
     }
-
-    [HttpGet]
+ 
+    [HttpGet] 
     public async Task<IActionResult> GetAll()
     {
         var query = new GetCitiesQuery();

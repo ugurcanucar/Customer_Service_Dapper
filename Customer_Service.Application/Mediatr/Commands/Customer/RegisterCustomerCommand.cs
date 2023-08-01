@@ -4,24 +4,26 @@ using MediatR;
 
 namespace Customer_Service.Application.Mediatr.Commands.Customer;
 
-public class AddNewCustomerCommand:IRequest<CustomerDto>
+public class RegisterCustomerCommand:IRequest<RegisterCustomerResponseDto>
 {
     public string Name { get; set; } = string.Empty;
     public string Surname { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
     public int CityId { get; set; }
+    public string Email { get; set; } = string.Empty;
+    
+    public string Password { get; set; } = string.Empty;
 
-    public static Entities.Customer ToEntity(AddNewCustomerCommand customer)
+    public static RegisterCustomerRequestDto ToRegisterCustomerRequestDto(RegisterCustomerCommand customer)
     {
-        return new Entities.Customer()
+        return new RegisterCustomerRequestDto()
         {
-            
             Name = customer.Name,
             CityId = customer.CityId,
             Surname = customer.Surname,
             PhoneNumber = customer.PhoneNumber,
             Email = customer.Email,
+            Password = customer.Password,
             
         };
     }

@@ -7,5 +7,8 @@ namespace Customer_Service.Application.Interfaces;
 
 public interface ICustomerRepository:IGenericRepository<Customer>
 {
-    
+    Task<Customer> RegisterAsync(RegisterCustomerRequestDto entity); 
+
+    Task<Customer> GetCustomerByEmailAsync(string email);
+
 }
