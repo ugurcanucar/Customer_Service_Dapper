@@ -21,7 +21,7 @@ public class CustomerController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet]
+    [HttpGet] 
     public async Task<IActionResult> GetAll()
     {
         var query = new GetAllCustomerQuery();

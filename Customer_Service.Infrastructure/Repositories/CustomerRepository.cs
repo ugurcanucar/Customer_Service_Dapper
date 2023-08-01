@@ -31,11 +31,19 @@ public class CustomerRepository : ICustomerRepository
 
     public async Task<IEnumerable<Customer>> GetAllAsync()
     {
-        var sql = $"Select*From Customer";
+        var sql = @" 
+            SELECT c.*, ct.*
+            From Customer c
+            LEFT JOIN City ct ON c.CityId=ct.Id";
+
         using (var connection = _connectFactory.GetSqlConnection())
         {
             connection.Open();
-            return await connection.QueryAsync<Customer>(sql);
+            return await connection.QueryAsync<Customer, City, Customer>(sql, (customer, city) =>
+            {
+                customer.City = city;
+                return customer;
+            });
         }
     }
 
@@ -100,7 +108,6 @@ public class CustomerRepository : ICustomerRepository
         }
     }
 
-   
 
     public async Task<Customer> GetCustomerByEmailAsync(string email)
     {

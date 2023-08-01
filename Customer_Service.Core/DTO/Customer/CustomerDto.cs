@@ -8,6 +8,7 @@ public class CustomerDto
     public string PhoneNumber { get; set; } = string.Empty;
     public int CityId { get; set; }
     public string Email { get; set; } = string.Empty;
+    public Entities.City City { get; set; }
 
     public static CustomerDto ToCustomerDto(Entities.Customer customer)
     {
@@ -18,7 +19,8 @@ public class CustomerDto
             Email = customer.Email,
             Name = customer.Name,
             Surname = customer.Surname,
-            PhoneNumber = customer.PhoneNumber
+            PhoneNumber = customer.PhoneNumber,
+            City = customer.City,
         }; 
     }
 

@@ -10,4 +10,5 @@ public class Customer
     
     public string PasswordHash { get; set; } = string.Empty;
     public int CityId { get; set; }
+    public City City { get; set; }
 }

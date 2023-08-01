@@ -8,7 +8,7 @@ public class LoginResponseDto
     public string PhoneNumber { get; set; } = string.Empty;
     public int CityId { get; set; }
     public string Email { get; set; } = string.Empty;
-    public string Token { get; set; } = string.Empty;
+    public string Token { get; set; } = string.Empty; 
 
     public static LoginResponseDto fromEntity(Entities.Customer customer)
     {
@@ -20,7 +20,7 @@ public class LoginResponseDto
             Surname = customer.Surname,
             Token = "",
             CityId = customer.CityId,
-            PhoneNumber = customer.PhoneNumber
+            PhoneNumber = customer.PhoneNumber, 
         };
     }
 }
