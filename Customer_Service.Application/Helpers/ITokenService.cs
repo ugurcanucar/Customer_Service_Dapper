@@ -1,5 +1,4 @@
-using Customer_Service.DTO.Customer;
-using Customer_Service.Entities;
+using Customer_Service.DTO.Customer; 
 
 namespace Customer_Service.Application.Helpers;
 

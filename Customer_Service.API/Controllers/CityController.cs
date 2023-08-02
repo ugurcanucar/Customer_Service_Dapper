@@ -1,6 +1,10 @@
+using Customer_Service_API.Attributes;
 using Customer_Service.Application.Mediatr.Commands.City;
 using Customer_Service.Application.Mediatr.Queries.City;
 using Customer_Service.Application.Mediatr.Queries.Customer;
+using Customer_Service.DTO.Base;
+using Customer_Service.DTO.City;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Customer_Service_API.Controllers;
 
 [Route("api/City")]
- [ApiController]
+[ApiController]
 public class CityController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -17,8 +21,8 @@ public class CityController : ControllerBase
     {
         _mediator = mediator;
     }
- 
-    [HttpGet] 
+
+    [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         var query = new GetCitiesQuery();
@@ -29,16 +33,18 @@ public class CityController : ControllerBase
     [Route("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var query = new GetCityByIdQuery(){Id = id};
+        var query = new GetCityByIdQuery() { Id = id };
         var result = await _mediator.Send(query);
         if (result == null)
         {
             return NotFound(Empty);
         }
+
         return Ok(await _mediator.Send(query));
     }
 
     [HttpPost]
+    [Validation]
     public async Task<IActionResult> AddCity(AddNewCityCommand query)
     {
         return Ok(await _mediator.Send(query));
