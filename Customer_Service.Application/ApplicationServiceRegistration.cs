@@ -1,5 +1,6 @@
 using System.Reflection;
 using Customer_Service.Application.Helpers;
+using Customer_Service.Application.Helpers.ValidationHelper;
 using Customer_Service.Application.Interfaces; 
 using Customer_Service.Entities;
 using FluentValidation;

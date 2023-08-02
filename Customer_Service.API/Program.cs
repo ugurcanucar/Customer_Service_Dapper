@@ -30,8 +30,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 }));
 builder.Services.AddAuthorization();
 
-builder.Services.AddInfrastructure();
 builder.Services.InjectValidator();
+builder.Services.AddInfrastructure();
 builder.Services.InjectMediatR();
 builder.Services.AddControllers();
 

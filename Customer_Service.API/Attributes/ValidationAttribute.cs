@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Customer_Service.DTO.Base;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +12,8 @@ public class ValidationAttribute : ExceptionFilterAttribute
     public override void OnException(ExceptionContext context)
     {
         if (context.ExceptionHandled) return;
-        ErrorModel model = new ErrorModel()
-        {
-            Message = context.Exception.Message
-        }; 
-        context.Result = new BadRequestObjectResult(model);
+        var errorModel = JsonSerializer.Deserialize<ErrorModel>(context.Exception.Message);
+        context.Result = new BadRequestObjectResult(errorModel);
+        context.ExceptionHandled = true;
     }
 }
