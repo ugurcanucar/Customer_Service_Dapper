@@ -1,12 +1,9 @@
-using System.Data.SqlClient;
+using System.Data;
 using Customer_Service.Application.Interfaces;
-using Customer_Service.Application.Mediatr.Commands.Customer;
-using Customer_Service.DTO;
 using Customer_Service.DTO.Customer;
 using Customer_Service.Entities;
 using Customer_Service.Infrastructure.Helpers;
 using Dapper;
-using Microsoft.Extensions.Configuration;
 
 namespace Customer_Service.Infrastructure.Repositories;
 
@@ -19,13 +16,26 @@ public class CustomerRepository : ICustomerRepository
         _connectFactory = configuration;
     }
 
-    public async Task<Customer> GetByIdAsync(int id)
+    public async Task<Customer?> GetByIdAsync(int id)
     {
-        var sql = $"Select*From Customer Where Id = {id}";
+        var sql = $@" 
+            SELECT c.*, ct.*
+            From Customer c
+            LEFT JOIN City ct ON c.CityId=ct.Id 
+            WHERE c.Id={id}
+            ";
         using (var connection = _connectFactory.GetSqlConnection())
         {
             connection.Open();
-            return await connection.QuerySingleOrDefaultAsync<Customer>(sql);
+            var result = await connection.QueryAsync<Customer, City, Customer>(
+                sql,
+                (customer, city) =>
+                {
+                    customer.City = city;
+                    return customer;
+                });
+
+            return result.FirstOrDefault();
         }
     }
 
@@ -35,7 +45,6 @@ public class CustomerRepository : ICustomerRepository
             SELECT c.*, ct.*
             From Customer c
             LEFT JOIN City ct ON c.CityId=ct.Id";
-
         using (var connection = _connectFactory.GetSqlConnection())
         {
             connection.Open();
@@ -67,15 +76,32 @@ public class CustomerRepository : ICustomerRepository
     }
 
 
-    public async Task<Customer> UpdateAsync(Customer entity)
+    public async Task<Customer?> UpdateAsync(Customer entity)
     {
         var sql =
-            "Update Customer SET Name= @Name,Email=@Email, Surname= @Surname,CityId=@CityId Where Id= @Id; Select*From Customer Where Id=@Id";
+            $@"Update Customer SET Name= @Name,Email=@Email, Surname= @Surname,CityId=@CityId Where Id= @Id; 
+            SELECT c.*, ct.*
+            From Customer c
+            LEFT JOIN City ct ON c.CityId=ct.Id  
+            WHERE c.Id=@Id
+";
+        var parameters = new DynamicParameters();
+        parameters.Add("@Name", entity.Name, DbType.String, ParameterDirection.Input);
+
         using (var connection = _connectFactory.GetSqlConnection())
         {
             connection.Open();
-            Customer customer = await connection.QueryFirstAsync<Customer>(sql, entity);
-            return customer;
+            IEnumerable<Customer> customer = await connection.QueryAsync<Customer, City, Customer>(sql,
+                (customer, city) =>
+                {
+                    customer.City = city;
+                    return customer;
+                },
+                new {Name=entity.Name,Email=entity.Email,Surname=entity.Surname,CityId=entity.CityId,Id=entity.Id}
+
+
+            );
+            return customer.FirstOrDefault();
         }
     }
 

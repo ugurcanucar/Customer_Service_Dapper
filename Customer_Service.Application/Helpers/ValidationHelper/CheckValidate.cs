@@ -15,7 +15,7 @@ public static class CheckValidate<T>
             var failures = validationResult.Errors.Select(x => x.ErrorMessage);
             ErrorModel model = new ErrorModel()
             {
-                Message = "Validasyon Hatalı",
+                Message = "Validation Error",
                 Errors = failures
             };
             var jsonModel = JsonSerializer.Serialize(model);

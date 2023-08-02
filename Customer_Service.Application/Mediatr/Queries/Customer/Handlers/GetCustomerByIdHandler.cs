@@ -16,7 +16,7 @@ public class GetCustomerByIdHandler : IRequestHandler<GetCustomerByIdQuery, Cust
 
     public async Task<CustomerDto?> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
     {
-        Entities.Customer customer= await _unitOfWork.Customers.GetByIdAsync(request.Id);
+        Entities.Customer? customer= await _unitOfWork.Customers.GetByIdAsync(request.Id);
         return CustomerDto.ToCustomerDto(customer);
     }
 }

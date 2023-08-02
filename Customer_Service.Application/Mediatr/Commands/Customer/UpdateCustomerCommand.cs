@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Customer_Service.Application.Mediatr.Commands.Customer;
 
-public class UpdateCustomerCommand:IRequest<CustomerDto>
+public class UpdateCustomerCommand:IRequest<CustomerDto?>
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;

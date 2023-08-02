@@ -4,9 +4,9 @@ using FluentValidation;
 
 namespace Customer_Service.Application.Validators.City;
 
-public class AddNewCityCommandValidator:AbstractValidator<AddNewCityCommand>
+public class UpdateCityValidator:AbstractValidator<UpdateCityCommand>
 {
-    public AddNewCityCommandValidator()
+    public UpdateCityValidator()
     {
         RuleFor(c => c.Name).NotEmpty().WithMessage("City Name Can't Be Empty"); 
         RuleFor(c => c.Name).MinimumLength(3).WithMessage("You must enter atleast 3 letter for city.");

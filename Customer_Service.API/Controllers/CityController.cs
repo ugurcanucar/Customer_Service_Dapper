@@ -37,10 +37,11 @@ public class CityController : ControllerBase
         var result = await _mediator.Send(query);
         if (result == null)
         {
-            return NotFound(Empty);
+            return NoContent();
+            
         }
-
-        return Ok(await _mediator.Send(query));
+            
+        return Ok(result);
     }
 
     [HttpPost]
@@ -51,14 +52,32 @@ public class CityController : ControllerBase
     }
 
     [HttpPut]
+    [Validation]
     public async Task<IActionResult> UpdateCity(UpdateCityCommand query)
     {
-        return Ok(await _mediator.Send(query));
+        UpdateCityDto? updatedCityDto =await _mediator.Send(query);
+        if (updatedCityDto == null)
+        {
+            return NoContent();
+        }
+        
+        return Ok(updatedCityDto);
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteCity(DeleteCityCommand query)
+    [Route("{id}")]
+    public async Task<IActionResult> DeleteCity(int id)
     {
-        return Ok(await _mediator.Send(query));
+        DeleteCityCommand command = new DeleteCityCommand() { Id = id };
+        bool isDeleted = await _mediator.Send(command);
+        ResponseModel model = new ResponseModel()
+        {
+            StatusCode = isDeleted?200:400,
+            Message = isDeleted?"City Deleted":"There is a error while deleting."
+        };
+        return new ObjectResult(model)
+        {
+            StatusCode = isDeleted?200:400,
+        };
     }
 }

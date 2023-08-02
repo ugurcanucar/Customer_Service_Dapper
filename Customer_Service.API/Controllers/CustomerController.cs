@@ -1,6 +1,8 @@
+using Customer_Service_API.Attributes;
 using Customer_Service.Application.Interfaces;
 using Customer_Service.Application.Mediatr.Commands.Customer;
 using Customer_Service.Application.Mediatr.Queries.Customer;
+using Customer_Service.DTO.Base;
 using Customer_Service.DTO.Customer;
 using Customer_Service.Entities;
 using MediatR;
@@ -14,14 +16,14 @@ namespace Customer_Service_API.Controllers;
 [ApiController]
 public class CustomerController : ControllerBase
 {
-     private readonly IMediator _mediator;
+    private readonly IMediator _mediator;
 
     public CustomerController(IMediator mediator)
-    { 
+    {
         _mediator = mediator;
     }
 
-    [HttpGet] 
+    [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         var query = new GetAllCustomerQuery();
@@ -29,14 +31,17 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPost("Login")]
+    [Validation]
     [AllowAnonymous]
     public async Task<ActionResult<LoginResponseDto>> Login(LoginCommand customer)
     {
-       LoginResponseDto? loginResponse= await _mediator.Send(customer);
+        LoginResponseDto? loginResponse = await _mediator.Send(customer);
         if (loginResponse == null)
         {
-            return NotFound(Empty);
+
+            return NoContent();
         }
+
         return Ok(loginResponse);
     }
 
@@ -46,24 +51,31 @@ public class CustomerController : ControllerBase
         var result = await _mediator.Send(new GetCustomerByIdQuery() { Id = id });
         if (result == null)
         {
-            return NotFound(Empty);
+
+            return NoContent();
         }
+
         return Ok(result);
     }
 
     [HttpPost]
     [Route("Register")]
+    [Validation]
     [AllowAnonymous]
     public async Task<IActionResult> Register(RegisterCustomerCommand customer)
-    { 
+    {
         var data = await _mediator.Send(customer);
         return Ok(data);
     }
-  
-    [HttpPut]
-    public async Task<IActionResult> Update(UpdateCustomerCommand customer)
+
+    [HttpPut]     public async Task<IActionResult> Update(UpdateCustomerCommand customer)
     {
         var data = await _mediator.Send(customer);
+        if (data == null)
+        {
+
+            return NoContent();
+        }
         return Ok(data);
     }
 }

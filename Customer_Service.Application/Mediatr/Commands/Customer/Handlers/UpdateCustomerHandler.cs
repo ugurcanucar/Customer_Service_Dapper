@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Customer_Service.Application.Mediatr.Commands.Customer.Handlers;
 
-public class UpdateCustomerHandler : IRequestHandler<UpdateCustomerCommand, CustomerDto>
+public class UpdateCustomerHandler : IRequestHandler<UpdateCustomerCommand, CustomerDto?>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -14,10 +14,10 @@ public class UpdateCustomerHandler : IRequestHandler<UpdateCustomerCommand, Cust
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<CustomerDto> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
+    public async Task<CustomerDto?> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
     {
         Entities.Customer customerModel = UpdateCustomerCommand.ToEntity(request);
-        Entities.Customer customerEntity = await _unitOfWork.Customers.UpdateAsync(customerModel); 
+        Entities.Customer? customerEntity = await _unitOfWork.Customers.UpdateAsync(customerModel); 
         return CustomerDto.ToCustomerDto(customerEntity);
     }
 }

@@ -6,8 +6,9 @@ public class CityListDto
     public string Name { get; set; }=string.Empty;
 
 
-    public static CityListDto ToCityListDto(Entities.City cities)
+    public static CityListDto? ToCityListDto(Entities.City? cities)
     {
+        if (cities == null) return null;
         return new CityListDto()
         {
             Id = cities.Id,
